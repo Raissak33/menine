@@ -315,7 +315,9 @@
                     </div>
                     <div>
                         <strong>QR Code PIX:</strong>
-                        <div class="qr-container" id="qrCode"></div>
+                        <div class="qr-container">
+                            <img src="qr.png" alt="QR Code PIX" style="width: 200px; height: 200px;">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -330,17 +332,7 @@
         // Substitua esta chave PIX pela sua chave real
         const PIX_KEY = "raissa.kanamaro@gmail.com";
         
-        // Substitua esta URL pela URL do seu QR Code PIX
-        const PIX_QR_URL = "00020126580014br.gov.bcb.pix013612345678900";
-
         document.getElementById('pixKey').textContent = PIX_KEY;
-
-        // Gerar QR Code
-        new QRCode(document.getElementById("qrCode"), {
-            text: PIX_QR_URL,
-            width: 200,
-            height: 200
-        });
 
         // Mostrar/esconder informações do PIX
         document.getElementById('contribuir').addEventListener('change', function() {
