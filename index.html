@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menine ou Menine?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Winky+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Winky Sans', sans-serif;
+        }
+
+        body {
+            background-image: url('8803026.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        body::before {
+            display: none;
+        }
+
+        .container {
+            background: linear-gradient(to bottom, rgba(153, 86, 192, 0.55), rgba(116, 229, 160, 0.45));
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.60),
+                        0 1px 8px rgba(0, 0, 0, 0.50);
+            position: relative;
+            z-index: 2;
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-weight: 500;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 30px;
+            margin-top: 10px;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: #34495e;
+        }
+
+        input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .resultado {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .resultado.visible {
+            opacity: 1;
+        }
+
+        .sucesso {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .erro {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .pix-info {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: rgba(248, 249, 250, 0.9);
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            display: none;
+            backdrop-filter: blur(5px);
+        }
+
+        .pix-info.visible {
+            display: block;
+        }
+
+        .pix-key {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            word-break: break-all;
+            font-family: monospace;
+        }
+
+        .qr-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .copy-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .copy-button:hover {
+            background: #218838;
+        }
+
+        .copy-button.copied {
+            background: #6c757d;
+        }
+
+        .pix-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .pix-header img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .valor-contribuicao {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .valor-contribuicao input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .valor-contribuicao input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .valor-simbolo {
+            font-size: 18px;
+            font-weight: 500;
+            color: #34495e;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .radio-group {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1> Menine ou Menine? </h1>
+        <form id="bolaoForm">
+            <div class="form-group">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" placeholder="Digite seu nome" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Palpite:</label>
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" id="menino" name="sexo" value="menino" required>
+                         Menino
+                    </label>
+                    
+                    <label>
+                        <input type="radio" id="menina" name="sexo" value="menina" required>
+                         Menina
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="checkbox-group">
+                    <input type="checkbox" id="contribuir" name="contribuir">
+                    Deseja contribuir no bolão? 
+                </label>
+                <div class="pix-info" id="pixInfo">
+                    <div class="pix-header">
+                        <img src="https://logospng.org/download/pix/logo-pix-icone-512.png" alt="PIX">
+                        <h3>Informações para Contribuição</h3>
+                    </div>
+                    <div>
+                        <strong>Chave PIX:</strong>
+                        <div class="pix-key">
+                            <span id="pixKey">raissa.kanamaro@gmail.com</span>
+                            <button class="copy-button" onclick="copyPixKey()">Copiar</button>
+                        </div>
+                    </div>
+                    <div>
+                        <strong>Valor da Contribuição:</strong>
+                        <div class="valor-contribuicao">
+                            <input type="number" id="valorContribuicao" name="valorContribuicao" 
+                                   placeholder="Digite o valor" min="0" step="0.01">
+                            <span class="valor-simbolo">R$</span>
+                        </div>
+                    </div>
+                    <div>
+                        <strong>QR Code PIX:</strong>
+                        <div class="qr-container" id="qrCode"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="submit">Enviar Palpite </button>
+        </form>
+        
+        <div id="resultado" class="resultado"></div>
+    </div>
+
+    <script>
+        // Substitua esta chave PIX pela sua chave real
+        const PIX_KEY = "raissa.kanamaro@gmail.com";
+        
+        // Substitua esta URL pela URL do seu QR Code PIX
+        const PIX_QR_URL = "00020126580014br.gov.bcb.pix013612345678900";
+
+        document.getElementById('pixKey').textContent = PIX_KEY;
+
+        // Gerar QR Code
+        new QRCode(document.getElementById("qrCode"), {
+            text: PIX_QR_URL,
+            width: 200,
+            height: 200
+        });
+
+        // Mostrar/esconder informações do PIX
+        document.getElementById('contribuir').addEventListener('change', function() {
+            const pixInfo = document.getElementById('pixInfo');
+            pixInfo.classList.toggle('visible', this.checked);
+        });
+
+        // Função para copiar a chave PIX
+        function copyPixKey() {
+            const pixKey = document.getElementById('pixKey').textContent;
+            navigator.clipboard.writeText(pixKey).then(() => {
+                const button = document.querySelector('.copy-button');
+                button.textContent = 'Copiado!';
+                button.classList.add('copied');
+                setTimeout(() => {
+                    button.textContent = 'Copiar';
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        document.getElementById('bolaoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = {
+                nome: formData.get('nome'),
+                sexo: formData.get('sexo'),
+                contribuir: formData.get('contribuir') === 'on',
+                valorContribuicao: formData.get('contribuir') === 'on' ? formData.get('valorContribuicao') : '0'
+            };
+
+            const url = new URL('https://script.google.com/macros/s/AKfycbwEmP50abCbsuSAMF8XARvSjtw7JwzADxTxvgQpog7G-WpzB5AA7Goh_COXsgVxHTgZPw/exec');
+            url.searchParams.append('nome', data.nome);
+            url.searchParams.append('sexo', data.sexo);
+            url.searchParams.append('contribuir', data.contribuir ? 'Sim' : 'Não');
+            url.searchParams.append('valorContribuicao', data.valorContribuicao);
+
+            fetch(url, {
+                method: 'GET',
+                mode: 'no-cors'
+            })
+            .then(() => {
+                const resultado = document.getElementById('resultado');
+                resultado.textContent = ' Palpite enviado com sucesso! ';
+                resultado.className = 'resultado sucesso visible';
+                this.reset();
+            })
+            .catch(error => {
+                const resultado = document.getElementById('resultado');
+                resultado.textContent = '❌ Erro ao enviar palpite. Tente novamente.';
+                resultado.className = 'resultado erro visible';
+                console.error('Erro:', error);
+            });
+        });
+    </script>
+</body>
+</html> 
